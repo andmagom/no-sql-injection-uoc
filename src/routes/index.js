@@ -1,7 +1,6 @@
 const express = require('express');
 const userController = require('../controller/users');
-var jwt = require('jsonwebtoken');
-
+const path = require('path');
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
@@ -10,17 +9,9 @@ router.post('/login', async (req, res) => {
 
   const result = await userController.validateCredential(user, pass);
   if(result) {
-    const token = jwt.sign({email: user}, 'secret');
-    return res.json({token});
+    return res.sendFile(path.join(__dirname+'/../../public/success.html'));
   } else {
-    return res.status(401).json(
-      {
-        error: {
-          title: 'Credentials Incorrect', 
-          description: 'Username or Password incorrect'
-        }
-      }
-    );
+    return res.sendFile(path.join(__dirname+'/../../public/error.html'));
   }
 });
 
